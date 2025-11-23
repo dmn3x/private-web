@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+
+{% block content %}
+<section class="section-hero">
+    <div class="container">
+        <h1 class="hero-title">Soft Computing</h1>
+        <p class="hero-subtitle">Kumpulan Tugas Soft Computing</p>
+    </div>
+</section>
+
+<section class="content-section">
+    <div class="container">
+        <div class="section-heading">
+            <h2>Daftar Tugas</h2>
+            <p>Geser ke kanan untuk melihat tugas lain.</p>
+        </div>
+        <div class="cards-carousel">
+            <button class="carousel-btn prev" data-carousel-btn data-direction="prev" data-carousel-target="tasksCarousel">&#8592;</button>
+            <button class="carousel-btn next" data-carousel-btn data-direction="next" data-carousel-target="tasksCarousel">&#8594;</button>
+            <div class="cards-track" id="tasksCarousel">
+                <article class="task-card">
+                    <span class="task-label">Tugas 1</span>
+                    <h3 class="task-title">Pengenalan Soft Computing</h3>
+                    <p class="task-desc">Pengertian soft computing, logika fuzzy, neural network, dan algoritma genetika secara singkat.</p>
+                    <div class="task-actions">
+                        <a class="task-button" href="/tugas1">
+                            Lihat Materi
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+                        </a>
+                    </div>
+                </article>
+                <article class="task-card">
+                    <span class="task-label">Tugas 2</span>
+                    <h3 class="task-title">Algoritma Genetika</h3>
+                    <p class="task-desc">Knapsack GA</p>
+                    <div class="task-actions">
+                        <a class="task-button" href="/tugas2">
+                            Buka Form
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+                        </a>
+                    </div>
+                </article>
+                <article class="task-card">
+                    <span class="task-label">Tugas 3</span>
+                    <h3 class="task-title">Travelling Salesman Problem</h3>
+                    <p class="task-desc">Simulasi GA untuk menemukan rute terbaik antar kota.</p>
+                    <div class="task-actions">
+                        <a class="task-button" href="/tugas3">
+                            Buka Eksperimen
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+                        </a>
+                    </div>
+                </article>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

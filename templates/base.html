@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ title }} - Soft Computing</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="{{ url_for('static', filename='css/style.css') }}" rel="stylesheet">
+</head>
+<body>
+    <nav class="simple-navbar sticky-top">
+        <div class="container">
+            <a class="brand" href="/">Soft Computing</a>
+        </div>
+    </nav>
+
+    <!-- Konten utama -->
+    {% block content %}{% endblock %}
+
+    <!-- Footer -->
+    <footer class="footer-elegant">
+        <div class="container">
+            <p>&copy; 2025 Soft Computing - Tugas Kuliah</p>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        function updateCarouselButtons(trackId) {
+            var track = document.getElementById(trackId);
+            if (!track) return;
+            
+            var prevBtn = document.querySelector('[data-carousel-target="' + trackId + '"][data-direction="prev"]');
+            var nextBtn = document.querySelector('[data-carousel-target="' + trackId + '"][data-direction="next"]');
+            
+            if (prevBtn) {
+                prevBtn.classList.toggle('hidden', track.scrollLeft <= 0);
+            }
+            if (nextBtn) {
+                var isAtEnd = track.scrollLeft + track.clientWidth >= track.scrollWidth - 5;
+                nextBtn.classList.toggle('hidden', isAtEnd);
+            }
+        }
+        
+        document.querySelectorAll('[data-carousel-btn]').forEach(function(btn) {
+            btn.addEventListener('click', function() {
+                var targetId = btn.getAttribute('data-carousel-target');
+                var direction = btn.getAttribute('data-direction');
+                var track = document.getElementById(targetId);
+                if (!track) return;
+                var offset = track.clientWidth * 0.8;
+                track.scrollBy({
+                    left: direction === 'next' ? offset : -offset,
+                    behavior: 'smooth'
+                });
+                setTimeout(function() { updateCarouselButtons(targetId); }, 400);
+            });
+        });
+        
+        document.querySelectorAll('.cards-track').forEach(function(track) {
+            track.addEventListener('scroll', function() {
+                updateCarouselButtons(track.id);
+            });
+            updateCarouselButtons(track.id);
+        });
+        
+        window.addEventListener('load', function() {
+            document.querySelectorAll('.cards-track').forEach(function(track) {
+                updateCarouselButtons(track.id);
+            });
+        });
+    </script>
+</body>
+</html>

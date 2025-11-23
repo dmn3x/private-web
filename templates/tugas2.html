@@ -1,0 +1,126 @@
+{% extends "base.html" %}
+
+{% block content %}
+<section class="section-hero">
+    <div class="container">
+        <h1 class="hero-title">Tugas 2 - Algoritma Genetika</h1>
+        <p class="hero-subtitle">Eksperimen knapsack berbasis web, bebas ubah parameter tanpa ribet.</p>
+    </div>
+</section>
+
+<section class="content-section">
+    <div class="container">
+        <div class="row g-4">
+            <div class="col-lg-5">
+                <div class="card-elegant">
+                    <div class="card-elegant-header">
+                        <h3>Input Percobaan</h3>
+                        <p class="mb-0 header-note">Format item: Nama, berat, nilai</p>
+                    </div>
+                    <div class="card-elegant-body">
+                        {% if error %}
+                        <div class="alert alert-danger" role="alert">{{ error }}</div>
+                        {% endif %}
+                        <form method="post">
+                            <div class="mb-3">
+                                <label class="form-label">Daftar Item</label>
+                                <textarea class="form-control {% if error_field == 'items' %}is-invalid{% endif %}" name="items" rows="6" required placeholder="Laptop, 2.5, 500&#10;Mouse, 0.1, 40&#10;Keyboard, 0.8, 120">{{ form_state.items_text }}</textarea>
+                                <div class="form-hint-box">
+                                    <span class="form-hint-title">Format pengisian</span>
+                                    <p class="mb-2">{{ items_help_text }}</p>
+                                    <span class="form-hint-title">Contoh</span>
+                                    <pre class="form-hint-example mb-0">Laptop, 2.5, 500
+Mouse, 0.1, 40
+Keyboard, 0.8, 120</pre>
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Kapasitas Knapsack</label>
+                                <input type="number" step="0.1" class="form-control" name="capacity" value="{{ form_state.capacity }}" required>
+                                <div class="form-text">Masukkan batas berat maksimum (contoh: 15).</div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Populasi</label>
+                                    <input type="number" class="form-control" name="pop_size" min="2" value="{{ form_state.pop_size }}" required>
+                                    <div class="form-text">Jumlah kromosom awal (min 2).</div>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Generasi</label>
+                                    <input type="number" class="form-control" name="generations" min="1" value="{{ form_state.generations }}" required>
+                                    <div class="form-text">Banyak iterasi evolusi.</div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Crossover Rate</label>
+                                    <input type="number" step="0.05" class="form-control" name="crossover_rate" value="{{ form_state.crossover_rate }}" required>
+                                    <div class="form-text">Probabilitas crossover (0-1).</div>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Mutation Rate</label>
+                                    <input type="number" step="0.05" class="form-control" name="mutation_rate" value="{{ form_state.mutation_rate }}" required>
+                                    <div class="form-text">Probabilitas mutasi (0-1).</div>
+                                </div>
+                            </div>
+                            <div class="form-check form-switch mb-4">
+                                <input class="form-check-input" type="checkbox" role="switch" name="elitism" id="elitismSwitch" {% if form_state.elitism == 'on' %}checked{% endif %}>
+                                <label class="form-check-label" for="elitismSwitch">Aktifkan elitism</label>
+                            </div>
+                            <button type="submit" class="btn btn-primary w-100">Jalankan GA</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-7">
+                <div class="card-elegant h-100">
+                    <div class="card-elegant-header">
+                        <h3>Hasil</h3>
+                        <p class="mb-0 text-muted">Laporan ringkas setiap generasi.</p>
+                    </div>
+                    <div class="card-elegant-body">
+                        {% if result %}
+                        <div class="mb-4">
+                            <h5 class="mb-2">Solusi Terbaik</h5>
+                            <ul class="list-unstyled mb-0">
+                                <li><strong>Item:</strong> {{ result.best_items | join(', ') if result.best_items else 'Tidak ada' }}</li>
+                                <li><strong>Berat:</strong> {{ result.best_weight }} / {{ result.capacity }}</li>
+                                <li><strong>Nilai:</strong> {{ result.best_value }}</li>
+                                <li><strong>Fitness:</strong> {{ result.best_fitness }}</li>
+                                <li><strong>Kromosom:</strong> {{ result.best_chromosome }}</li>
+                            </ul>
+                        </div>
+                        <div class="table-responsive">
+                            <table class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>Gen</th>
+                                        <th>Kromosom</th>
+                                        <th>Item</th>
+                                        <th>Berat</th>
+                                        <th>Nilai</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for row in result.history %}
+                                    <tr>
+                                        <td>{{ row.generation }}</td>
+                                        <td><code>{{ row.chromosome }}</code></td>
+                                        <td>{{ row["items"] | join(', ') if row["items"] else 'None' }}</td>
+                                        <td>{{ row.weight }}</td>
+                                        <td>{{ row.value }}</td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                        {% else %}
+                        <p class="text-muted mb-0">Silakan jalankan algoritma untuk melihat hasilnya.</p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

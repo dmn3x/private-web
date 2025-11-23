@@ -1,0 +1,147 @@
+{% extends "base.html" %}
+
+{% block content %}
+<section class="section-hero">
+    <div class="container">
+        <h1 class="hero-title">Tugas 3 - Travelling Salesman Problem</h1>
+        <p class="hero-subtitle">Eksperimen algoritma genetika untuk mencari rute terpendek.</p>
+    </div>
+</section>
+
+<section class="content-section">
+    <div class="container">
+        <div class="row g-4">
+            <div class="col-lg-5">
+                <div class="card-elegant">
+                    <div class="card-elegant-header">
+                        <h3>Parameter Algoritma</h3>
+                        <p class="mb-0 header-note">Ubah parameter GA dan jalankan ulang.</p>
+                    </div>
+                    <div class="card-elegant-body">
+                        {% if error %}
+                        <div class="alert alert-danger" role="alert">{{ error }}</div>
+                        {% endif %}
+                        <form method="post">
+                            <div class="mb-3">
+                                <label class="form-label">Nama Kota</label>
+                                <textarea class="form-control" name="cities" rows="5" required placeholder="A&#10;B&#10;C&#10;D&#10;E">{{ form_state.city_text }}</textarea>
+                                <div class="form-text">Masukkan satu nama kota per baris, urutan menentukan baris/kolom matriks.</div>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Matriks Jarak</label>
+                                <textarea class="form-control" name="matrix" rows="6" required placeholder="0 7 5 9 9&#10;7 0 7 2 8&#10;5 7 0 4 3&#10;9 2 4 0 6&#10;9 8 3 6 0">{{ form_state.matrix_text }}</textarea>
+                                <div class="form-text">Pisahkan angka dengan spasi atau koma. Banyak baris dan kolom harus sesuai daftar kota.</div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Populasi</label>
+                                    <input type="number" class="form-control" name="pop_size" min="2" required value="{{ form_state.pop_size }}">
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Generasi</label>
+                                    <input type="number" class="form-control" name="generations" min="1" required value="{{ form_state.generations }}">
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Crossover Rate</label>
+                                    <input type="number" step="0.05" class="form-control" name="crossover_rate" min="0" max="1" required value="{{ form_state.crossover_rate }}">
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Mutation Rate</label>
+                                    <input type="number" step="0.05" class="form-control" name="mutation_rate" min="0" max="1" required value="{{ form_state.mutation_rate }}">
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Tournament K</label>
+                                    <input type="number" class="form-control" name="tournament_k" min="1" required value="{{ form_state.tournament_k }}">
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Elite Size</label>
+                                    <input type="number" class="form-control" name="elite_size" min="0" required value="{{ form_state.elite_size }}">
+                                </div>
+                            </div>
+                            <div class="mb-4">
+                                <label class="form-label">Seed (opsional)</label>
+                                <input type="number" class="form-control" name="seed" value="{{ form_state.seed }}">
+                                <div class="form-text">Gunakan seed untuk hasil yang konsisten.</div>
+                            </div>
+                            <button type="submit" class="btn btn-primary w-100">Jalankan GA</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-7">
+                <div class="card-elegant h-100">
+                    <div class="card-elegant-header">
+                        <h3>Hasil</h3>
+                        <p class="mb-0 text-muted">Ringkasan rute terbaik dan riwayat evolusi.</p>
+                    </div>
+                    <div class="card-elegant-body">
+                        {% if result %}
+                        {% set cycle_route = result.best_route + [result.best_route[0]] %}
+                        <div class="mb-4">
+                            <h5 class="mb-2">Rute Terbaik</h5>
+                            <ul class="list-unstyled mb-0">
+                                <li><strong>Kota:</strong> {{ cycle_route | join(' -> ') }}</li>
+                                <li><strong>Jarak:</strong> {{ '%.2f'|format(result.best_distance) }}</li>
+                                <li><strong>Kromosom:</strong> <code>{{ result.best_route_indices }}</code></li>
+                                <li><strong>Parameter:</strong> Pop {{ result.params.pop_size }}, Gen {{ result.params.generations }}, Cr {{ result.params.crossover_rate }}, Mr {{ result.params.mutation_rate }}, Tk {{ result.params.tournament_k }}, Elite {{ result.params.elite_size }}</li>
+                            </ul>
+                        </div>
+                        <div class="table-responsive mb-4">
+                            <table class="table table-striped align-middle">
+                                <thead>
+                                    <tr>
+                                        <th>Gen</th>
+                                        <th>Rute</th>
+                                        <th>Jarak</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for row in result.history %}
+                                    <tr>
+                                        <td>{{ row.generation }}</td>
+                                        <td>{{ row.route | join(' -> ') }} -> {{ row.route[0] }}</td>
+                                        <td>{{ '%.2f'|format(row.distance) }}</td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                        {% else %}
+                        <p class="text-muted mb-0">Silakan jalankan algoritma untuk melihat hasil rute terbaik.</p>
+                        {% endif %}
+                        <div class="mt-4">
+                            <h5 class="mb-2">Matriks Jarak</h5>
+                            <div class="table-responsive">
+                                <table class="table table-bordered table-sm text-center">
+                                    <thead>
+                                        <tr>
+                                            <th>Kota</th>
+                                            {% for city in cities %}
+                                            <th>{{ city }}</th>
+                                            {% endfor %}
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for row_city, row in distance_rows %}
+                                        <tr>
+                                            <th scope="row">{{ row_city }}</th>
+                                            {% for distance in row %}
+                                            <td>{{ distance | round(2) }}</td>
+                                            {% endfor %}
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
