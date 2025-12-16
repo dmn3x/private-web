@@ -14,6 +14,7 @@ from tugas3 import (
     DEFAULT_TOURNAMENT_K as TSP_DEFAULT_TOURNAMENT,
     solve_tsp_ga,
 )
+from tugas4 import anfis
 
 ITEMS_HELP_TEXT = (
     "Masukkan satu item per baris dengan format: Nama, Berat, Nilai. "
@@ -257,6 +258,39 @@ def tugas3_view():
         cities=current_cities,
         dist_matrix=current_matrix,
         distance_rows=list(zip(current_cities, current_matrix)),
+    )
+
+
+@app.route('/tugas4', methods=['GET', 'POST'])
+def tugas4_view():
+    form_state = {
+        'x': request.form.get('x', '3'),
+        'y': request.form.get('y', '4'),
+    }
+
+    result = None
+    error = None
+
+    if request.method == 'POST':
+        try:
+            x = float(form_state['x'])
+            y = float(form_state['y'])
+
+            result = anfis(x, y)
+            result['x'] = x
+            result['y'] = y
+        except ValueError as exc:
+            error = f'Input harus berupa angka: {exc}'
+        except Exception as exc:
+            error = f'Gagal menjalankan ANFIS: {exc}'
+
+    return render_template(
+        'tugas4.html',
+        title="Tugas 4",
+        active_page="tugas4",
+        form_state=form_state,
+        result=result,
+        error=error,
     )
 
 # Menjalankan aplikasi Flask

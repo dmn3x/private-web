@@ -1,0 +1,103 @@
+{% extends "base.html" %}
+
+{% block content %}
+<section class="section-hero">
+    <div class="container">
+        <h1 class="hero-title">Tugas 4 - ANFIS</h1>
+        <p class="hero-subtitle">Adaptive Neuro-Fuzzy Inference System dengan input x dan y.</p>
+    </div>
+</section>
+
+<section class="content-section">
+    <div class="container">
+        <div class="row g-4">
+            <div class="col-lg-5">
+                <div class="card-elegant">
+                    <div class="card-elegant-header">
+                        <h3>Input Percobaan</h3>
+                        <p class="mb-0 header-note">Masukkan nilai x dan y</p>
+                    </div>
+                    <div class="card-elegant-body">
+                        {% if error %}
+                        <div class="alert alert-danger" role="alert">{{ error }}</div>
+                        {% endif %}
+                        <form method="post">
+                            <div class="mb-3">
+                                <label class="form-label">Nilai x</label>
+                                <input type="number" step="any" class="form-control" name="x" value="{{ form_state.x }}" required>
+                                <div class="form-text">Masukkan nilai untuk variabel x (contoh: 3).</div>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Nilai y</label>
+                                <input type="number" step="any" class="form-control" name="y" value="{{ form_state.y }}" required>
+                                <div class="form-text">Masukkan nilai untuk variabel y (contoh: 4).</div>
+                            </div>
+                            <div class="form-hint-box mb-3">
+                                <span class="form-hint-title">Contoh Input</span>
+                                <pre class="form-hint-example mb-0">x = 3
+y = 4</pre>
+                            </div>
+                            <button type="submit" class="btn btn-primary w-100">Jalankan ANFIS</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-7">
+                <div class="card-elegant h-100">
+                    <div class="card-elegant-header">
+                        <h3>Hasil</h3>
+                        <p class="mb-0 text-muted">Detail perhitungan ANFIS.</p>
+                    </div>
+                    <div class="card-elegant-body">
+                        {% if result %}
+                        <div class="mb-4">
+                            <h5 class="mb-3">Input</h5>
+                            <ul class="list-unstyled mb-0">
+                                <li><strong>x:</strong> {{ result.x }}</li>
+                                <li><strong>y:</strong> {{ result.y }}</li>
+                            </ul>
+                        </div>
+                        <div class="mb-4">
+                            <h5 class="mb-3">Derajat Keanggotaan</h5>
+                            <ul class="list-unstyled mb-0">
+                                <li><strong>A1:</strong> {{ "%.6f" | format(result.A1) }}</li>
+                                <li><strong>B1:</strong> {{ "%.6f" | format(result.B1) }}</li>
+                                <li><strong>A2:</strong> {{ "%.6f" | format(result.A2) }}</li>
+                                <li><strong>B2:</strong> {{ "%.6f" | format(result.B2) }}</li>
+                            </ul>
+                        </div>
+                        <div class="mb-4">
+                            <h5 class="mb-3">Firing Strength</h5>
+                            <ul class="list-unstyled mb-0">
+                                <li><strong>w1:</strong> {{ "%.6f" | format(result.w1) }}</li>
+                                <li><strong>w2:</strong> {{ "%.6f" | format(result.w2) }}</li>
+                            </ul>
+                        </div>
+                        <div class="mb-4">
+                            <h5 class="mb-3">Normalized Firing Strength</h5>
+                            <ul class="list-unstyled mb-0">
+                                <li><strong>W1:</strong> {{ "%.6f" | format(result.W1) }}</li>
+                                <li><strong>W2:</strong> {{ "%.6f" | format(result.W2) }}</li>
+                            </ul>
+                        </div>
+                        <div class="mb-4">
+                            <h5 class="mb-3">Output per Rule</h5>
+                            <ul class="list-unstyled mb-0">
+                                <li><strong>out1:</strong> {{ "%.6f" | format(result.out1) }}</li>
+                                <li><strong>out2:</strong> {{ "%.6f" | format(result.out2) }}</li>
+                            </ul>
+                        </div>
+                        <div class="alert alert-success">
+                            <h5 class="mb-2">Output Akhir</h5>
+                            <p class="mb-0"><strong>{{ "%.6f" | format(result.final_output) }}</strong></p>
+                        </div>
+                        {% else %}
+                        <p class="text-muted mb-0">Silakan masukkan nilai x dan y untuk melihat hasilnya.</p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
